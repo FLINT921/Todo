@@ -3,28 +3,29 @@ import React, { Component } from "react";
 import "./task.css";
 
 export class Task extends Component {
-    handleCheckboxChange = (state) => {
-        state = true;
-        this.states = state;
-        console.log(state);
-    };
-
     render() {
-        const { id, state, description, created } = this.props;
+        const { id, description, created, done, edition, onDeleted, onToggleDone, onToggleImportant } = this.props;
 
-        let classNames = state;
-
+        let classNames = "";
+        if (done) {
+            classNames += "completed";
+        } else if (edition) {
+            classNames += "editing";
+        } else if (!done && !edition) {
+            classNames = "";
+        }
         return (
             <li key={id} className={classNames}>
                 <div className="view">
-                    <input className="toggle" type="checkbox" onChange={() => this.handleCheckboxChange()} />
+                    <input className="toggle" type="checkbox" onChange={onToggleDone} />
                     <label>
                         <span className="description">{description}</span>
                         <span className="created">{created}</span>
                     </label>
-                    <button className="icon icon-edit"></button>
-                    <button className="icon icon-destroy"></button>
+                    <button className="icon icon-edit" onClick={this.changeEdition}></button>
+                    <button className="icon icon-destroy" onClick={onDeleted}></button>
                 </div>
+                <input type="text" className="edit" value={description}></input>
             </li>
         );
     }
