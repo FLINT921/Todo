@@ -12,15 +12,38 @@ export class App extends Component {
         taskData: [this.createTaskItem("Completed task"), this.createTaskItem("Editing task"), this.createTaskItem("Active task")],
     };
 
-    createTaskItem(description) {
+    constructor(props) {
+        super(props);
+        this.state = { data: new Date() };
+    }
+
+    componentDidMount() {
+        this.timerID = setInterval(() => this.tick(), 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID);
+    }
+
+    tick() {
+        this.setState({
+            date: new Date(),
+        });
+    }
+
+    creationTimeItem() {
+        new Date().toLocaleTimeString();
+    }
+
+    createTaskItem = (description, data) => {
         return {
             id: this.maxId++,
             description: description,
-            created: "created 17 seconds ago",
+            created: data,
             done: false,
             edition: false,
         };
-    }
+    };
 
     addItem = (text) => {
         const newItem = this.createTaskItem(text);
