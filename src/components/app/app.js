@@ -9,44 +9,30 @@ export class App extends Component {
     maxId = 100;
 
     state = {
-        taskData: [this.createTaskItem("Completed task"), this.createTaskItem("Editing task"), this.createTaskItem("Active task")],
+        taskData: [this.createTaskItem("Completed task", 1716928799), this.createTaskItem("Editing task", 17169289), this.createTaskItem("Active task", 1716917989)],
     };
 
-    constructor(props) {
-        super(props);
-        this.state = { data: new Date() };
-    }
-
-    componentDidMount() {
-        this.timerID = setInterval(() => this.tick(), 1000);
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.timerID);
-    }
-
-    tick() {
-        this.setState({
-            date: new Date(),
-        });
-    }
-
-    creationTimeItem() {
-        new Date().toLocaleTimeString();
-    }
-
-    createTaskItem = (description, data) => {
+    createTaskItem(description, date) {
         return {
             id: this.maxId++,
             description: description,
-            created: data,
+            created: date,
             done: false,
             edition: false,
         };
-    };
+    }
 
     addItem = (text) => {
-        const newItem = this.createTaskItem(text);
+        const now = new Date();
+        const tick = {
+            year: now.getFullYear(),
+            month: now.getMonth(),
+            day: now.getDate(),
+            hours: now.getHours(),
+            minutes: now.getMinutes(),
+            sec: now.getSeconds(),
+        };
+        const newItem = this.createTaskItem(text, tick);
         this.setState(({ taskData }) => {
             const newArray = [...taskData, newItem];
             return {
@@ -96,6 +82,9 @@ export class App extends Component {
     render() {
         const { taskData } = this.state;
         const tasksCount = this.state.taskData.filter((el) => !el.done).length;
+
+        console.log(this.state);
+
         return (
             <section className="todoapp">
                 <AppHeader onAdd={this.addItem} />
