@@ -27,8 +27,7 @@ export class App extends Component {
   }
 
   addItem = (text) => {
-    const tick = new Date();
-    const newItem = this.createTaskItem(text, tick.getTime());
+    const newItem = this.createTaskItem(text, new Date().getTime());
     this.setState(({ taskData }) => {
       const newArray = [...taskData, newItem];
       return {
