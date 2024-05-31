@@ -54,6 +54,36 @@ export class App extends Component {
         });
     };
 
+    changeEditButton = (id) => {
+        if (!this.state.taskData.done) {
+            this.setState(({ taskData }) => {
+                const idx = taskData.findIndex((el) => el.id === id);
+                const oldItem = taskData[idx];
+                const newItem = { ...oldItem, edition: !oldItem.edition };
+                const newArray = [...taskData.slice(0, idx), newItem, ...taskData.slice(idx + 1)];
+                return {
+                    taskData: newArray,
+                };
+            });
+        } else return this.state.taskData;
+    };
+    changeEdition = (text) => {
+        console.log(text);
+        this.setState(({ taskData }) => {
+            if (text === "") return taskData;
+
+            const idx = taskData.findIndex((el) => el.edition);
+            if (idx === -1) return taskData;
+
+            const oldItem = taskData[idx];
+            const changeItem = { ...oldItem, description: text, edition: !oldItem.edition };
+            const newArray = [...taskData.slice(0, oldItem.id), changeItem, ...taskData.slice(oldItem.id + 1)];
+            return {
+                taskData: newArray,
+            };
+        });
+    };
+
     onFilterTasks = (tasks, filter) => {
         switch (filter) {
             case "active":
@@ -100,7 +130,6 @@ export class App extends Component {
         const { taskData, filter } = this.state;
         const visibleTasks = this.onFilterTasks(taskData, filter);
         const tasksCount = taskData.filter((el) => !el.done).length;
-        console.log(taskData);
         return (
             <section className="todoapp">
                 <AppHeader onAdd={this.addItem} />
@@ -108,6 +137,8 @@ export class App extends Component {
                     tasks={visibleTasks}
                     tasksCount={tasksCount}
                     onDeleted={this.deleteItem}
+                    changeEdition={this.changeEdition}
+                    changeEditButton={this.changeEditButton}
                     onToggleDone={this.onToggleDone}
                     deleteAllCompletedItem={this.deleteAllCompletedItem}
                     onFilterAll={this.onFilterAll}

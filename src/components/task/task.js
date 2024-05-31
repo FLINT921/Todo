@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { formatDistanceToNow } from "date-fns";
 
 import "./task.css";
@@ -11,9 +12,24 @@ export class Task extends Component {
         });
         return result;
     }
+    state = {
+        description: "",
+    };
+    onTextChange = (e) => {
+        this.setState({
+            description: e.target.value,
+        });
+    };
+    onSubmit = (e) => {
+        e.preventDefault();
+        if (this.state.description.length !== 0) this.props.changeEdition(this.state.description);
+        this.setState({
+            description: "",
+        });
+    };
 
     render() {
-        const { id, description, created, done, edition, onDeleted, onToggleDone } = this.props;
+        const { id, description, created, done, edition, onDeleted, changeEditButton, onToggleDone } = this.props;
 
         let classNames = "";
         if (done) {
@@ -31,26 +47,33 @@ export class Task extends Component {
                         <span className="description">{description}</span>
                         <span className="created">created {this.creationTimeItem(created)} ago</span>
                     </label>
-                    <button className="icon icon-edit" onClick={this.changeEdition}></button>
+                    <button className="icon icon-edit" onClick={changeEditButton}></button>
                     <button className="icon icon-destroy" onClick={onDeleted}></button>
                 </div>
-                <input type="text" className="edit" value={description}></input>
+                <form onSubmit={this.onSubmit}>
+                    <input className="edit" placeholder={description} onChange={this.onTextChange} autoFocus />
+                </form>
             </li>
         );
     }
-    //     static propTypes = {
-    //     description: (props, propName, componentName) = {
-    //       const value = props[propName];
-
-    //       if (typeof value === 'string' && !isNaN(value)) {
-    //         return null;
-    //       }
-    //       return new TypeError(`${componentName}: ${propName}`)
-    //     }
-    // };
+    static propTypes = {
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        description: PropTypes.string.isRequired,
+        created: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.instanceOf(Date)]).isRequired,
+        done: PropTypes.bool.isRequired,
+        edition: PropTypes.bool.isRequired,
+        onDeleted: PropTypes.func.isRequired,
+        onToggleDone: PropTypes.func.isRequired,
+        changeEditButton: PropTypes.func.isRequired,
+        changeEdition: PropTypes.func.isRequired,
+    };
 }
 
 Task.defaultProps = {
     id: 0,
-    description: () => {},
+    description: "",
+    done: false,
+    edition: false,
+    onDeleted: () => {},
+    onToggleDone: () => {},
 };
