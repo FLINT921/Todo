@@ -1,152 +1,156 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import AppHeader from "../app-header";
-import AppMain from "../app-main";
+import AppHeader from '../app-header';
+import AppMain from '../app-main';
 
-import "./app.css";
+import './app.css';
 
 export class App extends Component {
-    maxId = 0;
+  maxId = 0;
 
-    state = {
-        taskData: [this.createTaskItem("Completed task", 1716962823934), this.createTaskItem("Editing task", 1716962823934), this.createTaskItem("Active task", 1716963124428)],
-        filter: "all",
+  state = {
+    taskData: [
+      this.createTaskItem('Completed task', 1716962823934),
+      this.createTaskItem('Editing task', 1716962823934),
+      this.createTaskItem('Active task', 1716963124428),
+    ],
+    filter: 'all',
+  };
+
+  createTaskItem(description, date) {
+    return {
+      id: this.maxId++,
+      description: description,
+      created: date,
+      done: false,
+      edition: false,
+      display: true,
     };
+  }
 
-    createTaskItem(description, date) {
+  addItem = (text) => {
+    const newItem = this.createTaskItem(text, new Date().getTime());
+    this.setState(({ taskData }) => {
+      const newArray = [...taskData, newItem];
+      return {
+        taskData: newArray,
+      };
+    });
+  };
+
+  deleteItem = (id) => {
+    this.setState(({ taskData }) => {
+      const idx = taskData.findIndex((el) => el.id === id);
+      const newArray = [...taskData.slice(0, idx), ...taskData.slice(idx + 1)];
+
+      return {
+        taskData: newArray,
+      };
+    });
+  };
+  deleteAllCompletedItem = () => {
+    this.setState(({ taskData }) => {
+      const newArray = taskData.filter((el) => !el.done);
+      console.log(newArray);
+      return {
+        taskData: newArray,
+      };
+    });
+  };
+
+  changeEditButton = (id) => {
+    if (!this.state.taskData.done) {
+      this.setState(({ taskData }) => {
+        const idx = taskData.findIndex((el) => el.id === id);
+        const oldItem = taskData[idx];
+        const newItem = { ...oldItem, edition: !oldItem.edition };
+        const newArray = [...taskData.slice(0, idx), newItem, ...taskData.slice(idx + 1)];
         return {
-            id: this.maxId++,
-            description: description,
-            created: date,
-            done: false,
-            edition: false,
-            display: true,
+          taskData: newArray,
         };
+      });
+    } else return this.state.taskData;
+  };
+  changeEdition = (text) => {
+    console.log(text);
+    this.setState(({ taskData }) => {
+      if (text === '') return taskData;
+
+      const idx = taskData.findIndex((el) => el.edition);
+      if (idx === -1) return taskData;
+
+      const oldItem = taskData[idx];
+      const changeItem = { ...oldItem, description: text, edition: !oldItem.edition };
+      const newArray = [...taskData.slice(0, oldItem.id), changeItem, ...taskData.slice(oldItem.id + 1)];
+      return {
+        taskData: newArray,
+      };
+    });
+  };
+
+  onFilterTasks = (tasks, filter) => {
+    switch (filter) {
+      case 'active':
+        return tasks.filter((el) => !el.done);
+      case 'completed':
+        return tasks.filter((el) => el.done);
+      case 'all':
+      default:
+        return tasks;
     }
+  };
 
-    addItem = (text) => {
-        const newItem = this.createTaskItem(text, new Date().getTime());
-        this.setState(({ taskData }) => {
-            const newArray = [...taskData, newItem];
-            return {
-                taskData: newArray,
-            };
-        });
-    };
+  onFilterAll = () => {
+    this.setState({
+      filter: 'all',
+    });
+  };
+  onFilterActive = () => {
+    this.setState({
+      filter: 'active',
+    });
+  };
+  onFilterCompleted = () => {
+    this.setState({
+      filter: 'completed',
+    });
+  };
 
-    deleteItem = (id) => {
-        this.setState(({ taskData }) => {
-            const idx = taskData.findIndex((el) => el.id === id);
-            const newArray = [...taskData.slice(0, idx), ...taskData.slice(idx + 1)];
+  onToggleDone = (id) => {
+    this.setState(({ taskData }) => {
+      const idx = taskData.findIndex((el) => el.id === id);
+      const oldItem = taskData[idx];
+      const newItem = { ...oldItem, done: !oldItem.done };
 
-            return {
-                taskData: newArray,
-            };
-        });
-    };
-    deleteAllCompletedItem = () => {
-        this.setState(({ taskData }) => {
-            const newArray = taskData.filter((el) => !el.done);
-            console.log(newArray);
-            return {
-                taskData: newArray,
-            };
-        });
-    };
+      const newArray = [...taskData.slice(0, idx), newItem, ...taskData.slice(idx + 1)];
 
-    changeEditButton = (id) => {
-        if (!this.state.taskData.done) {
-            this.setState(({ taskData }) => {
-                const idx = taskData.findIndex((el) => el.id === id);
-                const oldItem = taskData[idx];
-                const newItem = { ...oldItem, edition: !oldItem.edition };
-                const newArray = [...taskData.slice(0, idx), newItem, ...taskData.slice(idx + 1)];
-                return {
-                    taskData: newArray,
-                };
-            });
-        } else return this.state.taskData;
-    };
-    changeEdition = (text) => {
-        console.log(text);
-        this.setState(({ taskData }) => {
-            if (text === "") return taskData;
+      return {
+        taskData: newArray,
+      };
+    });
+  };
 
-            const idx = taskData.findIndex((el) => el.edition);
-            if (idx === -1) return taskData;
+  render() {
+    const { taskData, filter } = this.state;
+    const visibleTasks = this.onFilterTasks(taskData, filter);
+    const tasksCount = taskData.filter((el) => !el.done).length;
 
-            const oldItem = taskData[idx];
-            const changeItem = { ...oldItem, description: text, edition: !oldItem.edition };
-            const newArray = [...taskData.slice(0, oldItem.id), changeItem, ...taskData.slice(oldItem.id + 1)];
-            return {
-                taskData: newArray,
-            };
-        });
-    };
-
-    onFilterTasks = (tasks, filter) => {
-        switch (filter) {
-            case "active":
-                return tasks.filter((el) => !el.done);
-            case "completed":
-                return tasks.filter((el) => el.done);
-            case "all":
-            default:
-                return tasks;
-        }
-    };
-
-    onFilterAll = () => {
-        this.setState({
-            filter: "all",
-        });
-    };
-    onFilterActive = () => {
-        this.setState({
-            filter: "active",
-        });
-    };
-    onFilterCompleted = () => {
-        this.setState({
-            filter: "completed",
-        });
-    };
-
-    onToggleDone = (id) => {
-        this.setState(({ taskData }) => {
-            const idx = taskData.findIndex((el) => el.id === id);
-            const oldItem = taskData[idx];
-            const newItem = { ...oldItem, done: !oldItem.done };
-
-            const newArray = [...taskData.slice(0, idx), newItem, ...taskData.slice(idx + 1)];
-
-            return {
-                taskData: newArray,
-            };
-        });
-    };
-
-    render() {
-        const { taskData, filter } = this.state;
-        const visibleTasks = this.onFilterTasks(taskData, filter);
-        const tasksCount = taskData.filter((el) => !el.done).length;
-
-        return (
-            <section className="todoapp">
-                <AppHeader onAdd={this.addItem} />
-                <AppMain
-                    tasks={visibleTasks}
-                    tasksCount={tasksCount}
-                    onDeleted={this.deleteItem}
-                    changeEdition={this.changeEdition}
-                    changeEditButton={this.changeEditButton}
-                    onToggleDone={this.onToggleDone}
-                    deleteAllCompletedItem={this.deleteAllCompletedItem}
-                    onFilterAll={this.onFilterAll}
-                    onFilterActive={this.onFilterActive}
-                    onFilterCompleted={this.onFilterCompleted}
-                />
-            </section>
-        );
-    }
+    return (
+      <section className='todoapp'>
+        <AppHeader onAdd={this.addItem} />
+        <AppMain
+          tasks={visibleTasks}
+          tasksCount={tasksCount}
+          onDeleted={this.deleteItem}
+          changeEdition={this.changeEdition}
+          changeEditButton={this.changeEditButton}
+          onToggleDone={this.onToggleDone}
+          deleteAllCompletedItem={this.deleteAllCompletedItem}
+          onFilterAll={this.onFilterAll}
+          onFilterActive={this.onFilterActive}
+          onFilterCompleted={this.onFilterCompleted}
+        />
+      </section>
+    );
+  }
 }

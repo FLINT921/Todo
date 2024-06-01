@@ -17,7 +17,7 @@ export class TasksFilter extends Component {
     const { activeButton } = this.state;
 
     return (
-      <ul className="filters">
+      <ul className='filters'>
         <li>
           <button
             onClick={() => {

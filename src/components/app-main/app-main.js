@@ -18,7 +18,7 @@ export const AppMain = ({
   onFilterCompleted,
 }) => {
   return (
-    <section className="main">
+    <section className='main'>
       <TaskList
         tasks={tasks}
         onDeleted={onDeleted}

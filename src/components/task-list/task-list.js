@@ -8,7 +8,7 @@ export class TaskList extends Component {
   render() {
     const { tasks, onDeleted, changeEdition, changeEditButton, onToggleDone } = this.props;
     return (
-      <ul className="todo-list">
+      <ul className='todo-list'>
         {tasks.map((task) => (
           <Task
             key={task.id}

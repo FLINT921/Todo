@@ -5,7 +5,7 @@ import NewTaskForm from '../new-task-form';
 
 export const AppHeader = ({ onAdd }) => {
   return (
-    <div className="header">
+    <div className='header'>
       <h1>todos</h1>
       <NewTaskForm onAdd={onAdd} />
     </div>
