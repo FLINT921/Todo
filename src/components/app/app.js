@@ -130,6 +130,7 @@ export class App extends Component {
         const { taskData, filter } = this.state;
         const visibleTasks = this.onFilterTasks(taskData, filter);
         const tasksCount = taskData.filter((el) => !el.done).length;
+
         return (
             <section className="todoapp">
                 <AppHeader onAdd={this.addItem} />
