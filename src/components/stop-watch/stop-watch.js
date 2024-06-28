@@ -5,48 +5,69 @@ export default class Stopwatch extends Component {
     super(props);
     const savedTime = localStorage.getItem(`elapsedTime_${props.id}`);
     const savedRunning = localStorage.getItem(`running_${props.id}`) === 'true';
+    const lastUpdateTime = localStorage.getItem(`lastUpdateTime_${props.id}`);
     this.state = {
       elapsedTime: savedTime ? parseInt(savedTime, 10) : props.timer,
       running: savedRunning,
+      lastUpdateTime: lastUpdateTime ? parseInt(lastUpdateTime, 10) : Date.now(),
     };
-    this.stopwatchInterval = null;
+    this.animationFrameId = null;
   }
 
   componentDidMount() {
     if (this.state.running) {
-      this.startStopwatch();
+      this.runStopwatch();
     }
   }
 
   componentWillUnmount() {
-    clearInterval(this.stopwatchInterval);
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
   }
 
   startStopwatch = () => {
     if (this.state.running) return;
 
-    this.setState({ running: true }, () => {
+    const now = Date.now();
+    this.setState({ running: true, lastUpdateTime: now }, () => {
       localStorage.setItem(`running_${this.props.id}`, true);
-      this.stopwatchInterval = setInterval(() => {
-        if (this.state.elapsedTime > 0) {
-          this.setState((prevState) => {
-            const newElapsedTime = prevState.elapsedTime - 1000;
-            localStorage.setItem(`elapsedTime_${this.props.id}`, newElapsedTime);
-            return { elapsedTime: newElapsedTime };
-          });
-        } else {
-          this.stopStopwatch();
-          this.setState({
-            elapsedTime: this.props.timer,
-          });
-          localStorage.removeItem(`elapsedTime_${this.props.id}`);
-        }
-      }, 1000);
+      localStorage.setItem(`lastUpdateTime_${this.props.id}`, now);
+      this.runStopwatch();
+    });
+  };
+
+  runStopwatch = () => {
+    this.animationFrameId = requestAnimationFrame(() => {
+      const now = Date.now();
+      const elapsedTime = this.state.elapsedTime - (now - this.state.lastUpdateTime);
+
+      if (elapsedTime > 0) {
+        this.setState(
+          {
+            elapsedTime,
+            lastUpdateTime: now,
+          },
+          () => {
+            localStorage.setItem(`elapsedTime_${this.props.id}`, elapsedTime);
+            localStorage.setItem(`lastUpdateTime_${this.props.id}`, now);
+            this.runStopwatch();
+          },
+        );
+      } else {
+        this.stopStopwatch();
+        this.setState({
+          elapsedTime: this.props.timer,
+        });
+        localStorage.removeItem(`elapsedTime_${this.props.id}`);
+      }
     });
   };
 
   stopStopwatch = () => {
-    clearInterval(this.stopwatchInterval);
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
     this.setState({ running: false }, () => {
       localStorage.setItem(`running_${this.props.id}`, false);
     });
