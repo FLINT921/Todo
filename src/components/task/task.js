@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns';
 
 import './task.css';
+import Stopwatch from '../stop-watch/stop-watch';
 
 export class Task extends Component {
   creationTimeItem(date) {
@@ -13,23 +14,23 @@ export class Task extends Component {
     return result;
   }
   state = {
-    description: '',
+    title: '',
   };
   onTextChange = (e) => {
     this.setState({
-      description: e.target.value,
+      title: e.target.value,
     });
   };
   onSubmit = (e) => {
     e.preventDefault();
-    if (this.state.description.length !== 0) this.props.changeEdition(this.state.description);
+    if (this.state.title.length !== 0) this.props.changeEdition(this.state.title);
     this.setState({
-      description: '',
+      title: '',
     });
   };
 
   render() {
-    const { id, description, created, done, edition, onDeleted, changeEditButton, onToggleDone } = this.props;
+    const { id, title, timer, created, done, edition, onDeleted, changeEditButton, onToggleDone } = this.props;
 
     let classNames = '';
     if (done) {
@@ -44,14 +45,17 @@ export class Task extends Component {
         <div className='view'>
           <input className='toggle' type='checkbox' onChange={onToggleDone} />
           <label>
-            <span className='description'>{description}</span>
+            <span className='title'>{title}</span>
+            <span className='description'>
+              <Stopwatch timer={timer} id={id} />
+            </span>
             <span className='created'>created {this.creationTimeItem(created)} ago</span>
           </label>
           <button className='icon icon-edit' onClick={changeEditButton}></button>
           <button className='icon icon-destroy' onClick={onDeleted}></button>
         </div>
         <form onSubmit={this.onSubmit}>
-          <input className='edit' placeholder={description} onChange={this.onTextChange} autoFocus />
+          <input className='edit' placeholder={title} onChange={this.onTextChange} autoFocus />
         </form>
       </li>
     );

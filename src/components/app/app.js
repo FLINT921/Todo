@@ -10,26 +10,28 @@ export class App extends Component {
 
   state = {
     taskData: [
-      this.createTaskItem('Completed task', 1716962823934),
-      this.createTaskItem('Editing task', 1716962823934),
-      this.createTaskItem('Active task', 1716963124428),
+      this.createTaskItem('Completed task', 1716962823934, 4000),
+      this.createTaskItem('Editing task', 1716962823934, 4000),
+      this.createTaskItem('Active task', 1716963124428, 4000),
     ],
     filter: 'all',
   };
 
-  createTaskItem(description, date) {
+  createTaskItem(title, date, timer) {
     return {
       id: this.maxId++,
-      description: description,
+      title: title,
       created: date,
+      timer: timer,
       done: false,
       edition: false,
       display: true,
     };
   }
 
-  addItem = (text) => {
-    const newItem = this.createTaskItem(text, new Date().getTime());
+  addItem = (text, timer) => {
+    const newItem = this.createTaskItem(text, new Date().getTime(), timer);
+    console.log(text, timer);
     this.setState(({ taskData }) => {
       const newArray = [...taskData, newItem];
       return {
@@ -80,7 +82,7 @@ export class App extends Component {
       if (idx === -1) return taskData;
 
       const oldItem = taskData[idx];
-      const changeItem = { ...oldItem, description: text, edition: !oldItem.edition };
+      const changeItem = { ...oldItem, title: text, edition: !oldItem.edition };
       const newArray = [...taskData.slice(0, oldItem.id), changeItem, ...taskData.slice(oldItem.id + 1)];
       return {
         taskData: newArray,
