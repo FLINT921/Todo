@@ -23,10 +23,18 @@ export class Task extends Component {
   };
   onSubmit = (e) => {
     e.preventDefault();
-    if (this.state.title.length !== 0) this.props.changeEdition(this.state.title);
-    this.setState({
-      title: '',
-    });
+    const { title } = this.props;
+    if (this.state.title.length === 0) {
+      this.props.changeEdition(title);
+      this.setState({
+        title: title,
+      });
+    } else if (this.state.title.length !== 0) {
+      this.props.changeEdition(this.state.title);
+      this.setState({
+        title: this.state.titl,
+      });
+    }
   };
 
   render() {
@@ -62,7 +70,7 @@ export class Task extends Component {
   }
   static propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    description: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     created: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.instanceOf(Date)]).isRequired,
     done: PropTypes.bool.isRequired,
     edition: PropTypes.bool.isRequired,
@@ -75,7 +83,7 @@ export class Task extends Component {
 
 Task.defaultProps = {
   id: 0,
-  description: '',
+  title: '',
   done: false,
   edition: false,
   onDeleted: () => {},

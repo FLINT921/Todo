@@ -31,7 +31,6 @@ export class App extends Component {
 
   addItem = (text, timer) => {
     const newItem = this.createTaskItem(text, new Date().getTime(), timer);
-    console.log(text, timer);
     this.setState(({ taskData }) => {
       const newArray = [...taskData, newItem];
       return {
@@ -53,7 +52,6 @@ export class App extends Component {
   deleteAllCompletedItem = () => {
     this.setState(({ taskData }) => {
       const newArray = taskData.filter((el) => !el.done);
-      console.log(newArray);
       return {
         taskData: newArray,
       };
@@ -74,9 +72,8 @@ export class App extends Component {
     } else return this.state.taskData;
   };
   changeEdition = (text) => {
-    console.log(text);
     this.setState(({ taskData }) => {
-      if (text === '') return taskData;
+      if (text.trim() === ' ') return taskData;
 
       const idx = taskData.findIndex((el) => el.edition);
       if (idx === -1) return taskData;
