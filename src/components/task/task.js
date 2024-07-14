@@ -6,6 +6,10 @@ import './task.css';
 import Stopwatch from '../stop-watch/stop-watch';
 
 export class Task extends Component {
+  state = {
+    title: this.props.title, // Инициализация состояния значением из пропсов
+  };
+
   creationTimeItem(date) {
     const createTime = new Date(date);
     const result = formatDistanceToNow(createTime, {
@@ -13,32 +17,32 @@ export class Task extends Component {
     });
     return result;
   }
-  state = {
-    title: '',
-  };
+
   onTextChange = (e) => {
     this.setState({
       title: e.target.value,
     });
   };
+
   onSubmit = (e) => {
     e.preventDefault();
-    const { title } = this.props;
-    if (this.state.title.length === 0) {
+    const { title } = this.state;
+    if (title.length === 0) {
+      this.props.changeEdition(this.props.title);
+      this.setState({
+        title: this.props.title,
+      });
+    } else {
       this.props.changeEdition(title);
       this.setState({
         title: title,
-      });
-    } else if (this.state.title.length !== 0) {
-      this.props.changeEdition(this.state.title);
-      this.setState({
-        title: this.state.titl,
       });
     }
   };
 
   render() {
-    const { id, title, timer, created, done, edition, onDeleted, changeEditButton, onToggleDone } = this.props;
+    const { id, timer, created, done, edition, onDeleted, changeEditButton, onToggleDone } = this.props;
+    const { title } = this.state;
 
     let classNames = '';
     if (done) {
@@ -48,6 +52,7 @@ export class Task extends Component {
     } else if (!done && !edition) {
       classNames = '';
     }
+
     return (
       <li key={id} className={classNames}>
         <div className='view'>
@@ -62,12 +67,15 @@ export class Task extends Component {
           <button className='icon icon-edit' onClick={changeEditButton}></button>
           <button className='icon icon-destroy' onClick={onDeleted}></button>
         </div>
-        <form onSubmit={this.onSubmit}>
-          <input className='edit' placeholder={title} onChange={this.onTextChange} autoFocus />
-        </form>
+        {edition && (
+          <form onSubmit={this.onSubmit}>
+            <input className='edit' placeholder={title} onChange={this.onTextChange} value={title} autoFocus />
+          </form>
+        )}
       </li>
     );
   }
+
   static propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     title: PropTypes.string.isRequired,
