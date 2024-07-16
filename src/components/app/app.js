@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 
 import Header from '../header/Header';
 import Main from '../main/Main';
-import Footer from '../footer/Footer';
+import Footer from '../footer/footer';
 
 const App = () => {
   const initialTasks = [
