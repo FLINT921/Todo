@@ -1,8 +1,8 @@
 import React from 'react';
 
-import TaskFilter from '../TaskFilter';
+import TaskFilter from '../taskFilter/TaskFilter';
 
-export const Footer = ({ deleteAllCompletedItem, tasksCount, setFilter, filter }) => {
+const Footer = ({ deleteAllCompletedItem, tasksCount, setFilter, filter }) => {
   return (
     <footer className='footer'>
       <span className='todo-count'>{tasksCount} items left</span>
@@ -13,3 +13,4 @@ export const Footer = ({ deleteAllCompletedItem, tasksCount, setFilter, filter }
     </footer>
   );
 };
+export default Footer;

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 
-import { Header } from '../Header/Header';
-import { Main } from '../Main/Main';
-import { Footer } from '../Footer/Footer';
+import Header from '../header/Header';
+import Main from '../main/Main';
+import Footer from '../footer/footer';
 
-export const App = () => {
+const App = () => {
   const initialTasks = [
     { title: 'Completed task', date: 1716962823934, timer: 4000 },
     { title: 'Editing task', date: 1716962823934, timer: 4000 },
@@ -110,3 +110,5 @@ export const App = () => {
     </section>
   );
 };
+
+export default App;

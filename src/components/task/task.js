@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
-import StopWatch from '../StopWatch';
+import StopWatch from '../stopWatch/StopWatch';
 
 const Task = ({
   id,
