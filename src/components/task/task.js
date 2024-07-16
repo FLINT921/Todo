@@ -3,8 +3,13 @@ import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns';
 
 import './task.css';
+import Stopwatch from '../stop-watch/stop-watch';
 
 export class Task extends Component {
+  state = {
+    title: this.props.title, // Инициализация состояния значением из пропсов
+  };
+
   creationTimeItem(date) {
     const createTime = new Date(date);
     const result = formatDistanceToNow(createTime, {
@@ -12,24 +17,32 @@ export class Task extends Component {
     });
     return result;
   }
-  state = {
-    description: '',
-  };
+
   onTextChange = (e) => {
     this.setState({
-      description: e.target.value,
-    });
-  };
-  onSubmit = (e) => {
-    e.preventDefault();
-    if (this.state.description.length !== 0) this.props.changeEdition(this.state.description);
-    this.setState({
-      description: '',
+      title: e.target.value,
     });
   };
 
+  onSubmit = (e) => {
+    e.preventDefault();
+    const { title } = this.state;
+    if (title.length === 0) {
+      this.props.changeEdition(this.props.title);
+      this.setState({
+        title: this.props.title,
+      });
+    } else {
+      this.props.changeEdition(title);
+      this.setState({
+        title: title,
+      });
+    }
+  };
+
   render() {
-    const { id, description, created, done, edition, onDeleted, changeEditButton, onToggleDone } = this.props;
+    const { id, timer, created, done, edition, onDeleted, changeEditButton, onToggleDone } = this.props;
+    const { title } = this.state;
 
     let classNames = '';
     if (done) {
@@ -39,26 +52,33 @@ export class Task extends Component {
     } else if (!done && !edition) {
       classNames = '';
     }
+
     return (
       <li key={id} className={classNames}>
         <div className='view'>
           <input className='toggle' type='checkbox' onChange={onToggleDone} />
           <label>
-            <span className='description'>{description}</span>
+            <span className='title'>{title}</span>
+            <span className='description'>
+              <Stopwatch timer={timer} id={id} />
+            </span>
             <span className='created'>created {this.creationTimeItem(created)} ago</span>
           </label>
           <button className='icon icon-edit' onClick={changeEditButton}></button>
           <button className='icon icon-destroy' onClick={onDeleted}></button>
         </div>
-        <form onSubmit={this.onSubmit}>
-          <input className='edit' placeholder={description} onChange={this.onTextChange} autoFocus />
-        </form>
+        {edition && (
+          <form onSubmit={this.onSubmit}>
+            <input className='edit' placeholder={title} onChange={this.onTextChange} value={title} autoFocus />
+          </form>
+        )}
       </li>
     );
   }
+
   static propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    description: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     created: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.instanceOf(Date)]).isRequired,
     done: PropTypes.bool.isRequired,
     edition: PropTypes.bool.isRequired,
@@ -71,7 +91,7 @@ export class Task extends Component {
 
 Task.defaultProps = {
   id: 0,
-  description: '',
+  title: '',
   done: false,
   edition: false,
   onDeleted: () => {},
