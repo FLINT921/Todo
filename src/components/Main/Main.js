@@ -1,8 +1,8 @@
 import React from 'react';
 
-import TaskList from '../TaskList/TaskList';
+import TaskList from '../TaskList';
 
-const Main = ({ tasks, onToggleDone, deleteItem, changeEditButton, changeEdition }) => {
+export const Main = ({ tasks, onToggleDone, deleteItem, changeEditButton, changeEdition }) => {
   return (
     <section className='main'>
       <TaskList
@@ -15,5 +15,3 @@ const Main = ({ tasks, onToggleDone, deleteItem, changeEditButton, changeEdition
     </section>
   );
 };
-
-export default Main;

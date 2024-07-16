@@ -1,8 +1,8 @@
 import React from 'react';
 
-import NewTaskForm from '../NewTaskForm/NewTaskForm';
+import NewTaskForm from '../NewTaskForm';
 
-const Header = ({ addItem }) => {
+export const Header = ({ addItem }) => {
   return (
     <div className='header'>
       <h1>todos</h1>
@@ -10,5 +10,3 @@ const Header = ({ addItem }) => {
     </div>
   );
 };
-
-export default Header;

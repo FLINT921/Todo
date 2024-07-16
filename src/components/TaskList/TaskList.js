@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Task from '../Task/Task';
+import Task from '../Task';
 
 const TaskList = ({ tasks = [], onToggleDone, deleteItem, changeEditButton, changeEdition }) => {
   return (

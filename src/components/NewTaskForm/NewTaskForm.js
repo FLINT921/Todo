@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const NewTaskForm = ({ addItem }) => {
+export const NewTaskForm = ({ addItem }) => {
   const [title, setTitle] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
@@ -42,5 +42,3 @@ const NewTaskForm = ({ addItem }) => {
     </form>
   );
 };
-
-export default NewTaskForm;

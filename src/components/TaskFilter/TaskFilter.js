@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TaskFilter = ({ setFilter, filter }) => {
+export const TaskFilter = ({ setFilter, filter }) => {
   return (
     <ul className='filters'>
       <li>
@@ -36,5 +36,3 @@ const TaskFilter = ({ setFilter, filter }) => {
     </ul>
   );
 };
-
-export default TaskFilter;
