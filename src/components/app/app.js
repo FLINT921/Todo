@@ -54,7 +54,6 @@ const App = () => {
     setTasks(newArray);
   };
   const changeEditButton = (taskId) => {
-    console.log(taskId);
     if (!tasks.done) {
       const idx = tasks.findIndex((el) => el.id === taskId);
       const oldItem = tasks[idx];

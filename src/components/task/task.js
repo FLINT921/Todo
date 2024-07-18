@@ -24,9 +24,13 @@ const Task = ({
     });
     return result;
   };
-
   const onTextChange = (el) => {
-    setLocalTitle(el.target.value);
+    const inputValue = el.target.value;
+    console.log(inputValue, inputValue.length);
+
+    if (inputValue !== ' ') {
+      setLocalTitle(inputValue);
+    }
   };
 
   const onSubmit = (el) => {
@@ -62,7 +66,7 @@ const Task = ({
       </div>
       {edition && (
         <form onSubmit={onSubmit}>
-          <input className='edit' placeholder={title} onChange={onTextChange} value={localTitle} autoFocus />
+          <input className='edit' placeholder='Input Text' onChange={onTextChange} value={localTitle} autoFocus />
         </form>
       )}
     </li>
